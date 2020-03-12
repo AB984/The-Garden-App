@@ -1,6 +1,6 @@
 var router = require('express').Router();
 // let fetch = require('node-fetch');
-const request = require('request');
+// const request = require('request');
 const fetch = require('node-fetch')
 var Trefle = require('../db').import('../models/trefle');
 
