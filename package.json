@@ -1,0 +1,26 @@
+{
+  "name": "gardeningappserver",
+  "version": "1.0.0",
+  "description": "server for gardening app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./node_modules/http-server/bin/http-server"
+  },
+  "author": "AB Scherschel",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "http-server": "^0.12.1",
+    "jsonwebtoken": "^8.2.0",
+    "node-fetch": "^2.6.0",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.37.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
