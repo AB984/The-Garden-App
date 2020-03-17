@@ -8,7 +8,7 @@ const validateSession = (req, res, next) => {
     const token = req.headers.authorization;
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        
+        console.log(token);
         if(!err && decoded){
             User.findOne({
                 where: {

@@ -2,53 +2,30 @@ var router = require('express').Router();
 // let fetch = require('node-fetch');
 // const request = require('request');
 const fetch = require('node-fetch')
-var Trefle = require('../db').import('../models/trefle');
-
-// function Headers() {
-//     this.method = '',
-//     this.headers = '',
-//     this.redirect = ''
-// }
+// var Trefle = require('../db').import('../models/trefle');
+var Trefle = require('../db').import('../models/plant');
 
 //  POST create plant entry
 router.post('/trefle', (req, res) => {
     var owner = req.user.id;
     var scientific_name = req.body.scientific_name;
-    var family_common_name = req.body.family_common_name;
     var common_name = req.body.common_name;
     var specifications = req.body.specifications;
 
     Trefle.create({
         owner: owner,
-        scientificName: scientific_name,
-        commonName: common_name,
+        scientific_name: scientific_name,
+        common_name: common_name,
         specifications: specifications
     })
     .then(data => res.status(200).json(data))
     .catch(err => res.json( { error: err } ))
 });
 
-// router.get('/trefleauth', (req, res) => {
-//     // var myHeaders = new Headers();
-    
-//     // var requestOptions = {
-//     //   method: 'GET',
-//     //   headers: myHeaders,
-//     //   redirect: 'follow'
-//     // };
-    
-//     fetch("https://trefle.io/api/plants/?token=M0RnR3hmWTl1aFpCdk9hM2F1MzVEZz09&origin=http://localhost:3001")
-//       .then(response => response.json())
-//       .then(result => {
-//           console.log(result)
-//         })
-//       .catch(error => console.log('error', error));
-
-// })
 
 router.get('/trefleauth', async (req, res) => {
     try {
-    
+        
         let fetchAllPlants = await fetch("https://trefle.io/api/plants?=", {
             method: 'GET',
             headers: {
@@ -56,47 +33,41 @@ router.get('/trefleauth', async (req, res) => {
                 'Authorization': 'M0RnR3hmWTl1aFpCdk9hM2F1MzVEZz09'
             }
         })
-        console.log(fetchAllPlants)
-    
-        let jsonData = await fetchAllPlants.json()
         
-        console.log(jsonData)
-    
+        let jsonData = await fetchAllPlants.json()
+        let moreInfo = await handleData();
+        
+        
         async function handleData() {
     
             let responseObj = {
                     plants: []
                 }
-    
-            let pushPlants = await jsonData.forEach((plant, index) => {  
-        
-                    fetch(plant.link, {
+
+                for(let plant of jsonData) {
+                    let fetchEach = await fetch(plant.link, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
                             'Authorization': 'M0RnR3hmWTl1aFpCdk9hM2F1MzVEZz09'
                     }})
-                    .then(res => res.json())
-                    .then(json => {
-                        let plantObj = {
-                            sciName: plant.scientific_name,
-                            commonName: plant.common_name,
+                    let json = await fetchEach.json();
+                    let plantObj = {
+                            scientific_name: plant.scientific_name,
+                            common_name: plant.common_name,
                             images: json.images
                             }
-                        responseObj.plants.push(plantObj)
-                        if(responseObj.plants.length >= 20) {
-                            res.status(200).send(responseObj)
-                        } else{
-                            console.log(index)
-                        }
-                        })
-                    })
+                    responseObj.plants.push(plantObj)
+                }
+                return responseObj
     }
 
-    handleData()
+    res.status(200).send(moreInfo)
+
 
     } catch(e) {
         console.log(e)
+        res.status(500).json({error: e})
     }
 })
 

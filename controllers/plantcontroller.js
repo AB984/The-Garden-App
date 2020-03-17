@@ -6,14 +6,16 @@ var Plant = require('../db').import('../models/plant');
 //  POST create plant entry
 router.post('/plants', (req, res) => {
     var owner = req.user.id;
-    var species = req.body.species;
-    var description = req.body.description;
+    var common_name = req.body.common_name;
+    var scientific_name = req.body.scientific_name;
+    var images = req.body.images;
     var specifications = req.body.specifications;
 
     Plant.create({
         owner: owner,
-        species: species,
-        description: description,
+        common_name: common_name,
+        scientific_name: scientific_name,
+        Images: images,
         specifications: specifications
     })
     .then(data => res.status(200).json(data))
