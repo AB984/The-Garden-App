@@ -12,8 +12,8 @@ var user = require('./controllers/usercontroller');
 app.use(require('./middleware/headers'));
 
 const sequelize = require("./db")
-sequelize.sync();
-// sequelize.sync({force: true});
+// sequelize.sync();
+sequelize.sync({force: true});
 app.use(express.json())
 
 app.use('/user', user);
